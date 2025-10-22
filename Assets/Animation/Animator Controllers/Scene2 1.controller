@@ -97,7 +97,11 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
+<<<<<<< HEAD
   m_Motion: {fileID: -8425006578405387506, guid: 104adaf84644b4d4fb16a240d069355a, type: 3}
+=======
+  m_Motion: {fileID: -203655887218126122, guid: 104adaf84644b4d4fb16a240d069355a, type: 3}
+>>>>>>> parent of 6dc5a43 (1017 UI response)
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -419,18 +423,6 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
---- !u!114 &-1229981562184226234
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 56af7bcedb8944d4b8e12a65ddfa47a7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1102 &-545184970094428636
 AnimatorState:
   serializedVersion: 6
@@ -491,8 +483,7 @@ AnimatorState:
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions: []
-  m_StateMachineBehaviours:
-  - {fileID: -1229981562184226234}
+  m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
