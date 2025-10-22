@@ -1,55 +1,91 @@
 using UnityEngine;
 using Oculus.Voice;
-using TMPro;
+using TMPro; // for TextMeshPro UI
 
 public class VoiceManager : MonoBehaviour
 {
-    public OVRHand ovrHand;
-    public AppVoiceExperience appVoice;
-    public GameObject uiTextObject;
-    public TMP_Text transcriptText;
+    public OVRHand ovrHand;                 // Assign your hand (LeftHandAnchor or RightHandAnchor)
+    public AppVoiceExperience appVoice;     // Assign your AppVoiceExperience object
+    public GameObject uiTextObject;         // UI panel or TextMeshPro object to show/hide
+    public TMP_Text transcriptText;         // Optional: to display recognized speech text
 
-    private int tapCount = 0;
-    private bool lastThumbTap = false;
+    private bool isUIActive = false;
 
-    void Update()
+    void OnEnable()
     {
-        if (ovrHand != null)
+        if (appVoice != null)
         {
-            var microGesture = ovrHand.GetMicrogestureType();
-            bool isThumbTap = microGesture == OVRHand.MicrogestureType.ThumbTap;
-
-            // 检测到 ThumbTap 的上升沿
-            if (isThumbTap && !lastThumbTap)
-            {
-                tapCount++;
-                Debug.Log("ThumbTap tapCount: " + tapCount);
-
-                if (tapCount == 1)
-                {
-                    ActivateVoiceAndUI();
-                }
-                else if (tapCount == 2)
-                {
-                    DeactivateVoiceAndUI();
-                    tapCount = 0; // 重置计数
-                }
-            }
-            lastThumbTap = isThumbTap;
+            // Listen to Wit.ai transcription events
+            appVoice.VoiceEvents.OnFullTranscription.AddListener(OnFullTranscription);
+            appVoice.VoiceEvents.OnError.AddListener(OnError);
         }
     }
 
+    void OnDisable()
+    {
+        if (appVoice != null)
+        {
+            appVoice.VoiceEvents.OnFullTranscription.RemoveListener(OnFullTranscription);
+            appVoice.VoiceEvents.OnError.RemoveListener(OnError);
+        }
+    }
+
+    void Update()
+    {
+        // Manual test (space bar)
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Debug.Log("Space pressed!");
+            ActivateVoiceAndUI();
+        }
+
+        // Controller input (A button / Button.One)
+        if (OVRInput.GetDown(OVRInput.Button.One))
+        {
+            ActivateVoiceAndUI();
+        }
+
+        // Hand gesture trigger
+        if (ovrHand != null)
+        {
+            OVRHand.MicrogestureType microGesture = ovrHand.GetMicrogestureType();
+            if (microGesture == OVRHand.MicrogestureType.ThumbTap)
+            {
+                ActivateVoiceAndUI();
+            }
+        }
+    }
+
+    // ✨ Combined function for gesture or button activation
     private void ActivateVoiceAndUI()
     {
         Debug.Log("Voice + UI Activated!");
-        if (appVoice != null) appVoice.Activate();
-        if (uiTextObject != null) uiTextObject.SetActive(true);
+
+        // Activate Wit voice recognition
+        if (appVoice != null)
+            appVoice.Activate();
+
+        // Activate UI element
+        if (uiTextObject != null)
+        {
+            isUIActive = !isUIActive; // toggle on/off if you like
+            uiTextObject.SetActive(isUIActive);
+        }
     }
 
-    private void DeactivateVoiceAndUI()
+    // 🔤 Display recognized text
+    private void OnFullTranscription(string text)
     {
-        Debug.Log("Voice + UI Deactivated!");
-        if (appVoice != null) appVoice.Deactivate();
-        if (uiTextObject != null) uiTextObject.SetActive(false);
+        Debug.Log("Recognized speech: " + text);
+        if (transcriptText != null)
+        {
+            transcriptText.text = text;
+        }
+    }
+
+    // ⚠️ Error handling
+    private void OnError(string error, string message)
+    {
+        Debug.LogError($"Voice error: {error} - {message}");
     }
 }
