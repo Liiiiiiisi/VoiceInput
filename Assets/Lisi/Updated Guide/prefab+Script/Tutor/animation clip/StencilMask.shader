@@ -1,26 +1,30 @@
-Shader "Unlit/StencilMask"
+Shader "Unlit/StencilMask_URP"
 {
     Properties
     {
-        [IntRange]_stencilID("Stencil ID", Range(0,255))= 0
+        [IntRange]_StencilID("Stencil ID", Range(0,255)) = 0
     }
 
     SubShader
     {
-        Tags{"RenderType"="Opaque" "Queue"="Geometry-1" "RenderPipeline"="UniversalPipline"}
+        Tags { "RenderType"="Opaque" "Queue"="Geometry-1" "RenderPipeline"="UniversalPipeline" }
 
         Pass
         {
-            Blend Zero One
+
+            // 不输出颜色
+            ColorMask 0
             ZWrite Off
 
             Stencil
             {
-                Ref [_stencilID]
+                Ref [_StencilID]
                 Comp Always
                 Pass Replace
-    
             }
+
         }
     }
 }
+
+
